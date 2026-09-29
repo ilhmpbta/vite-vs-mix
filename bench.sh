@@ -136,12 +136,15 @@ clear_cache() {
       rm -rf "${dir}/node_modules/.cache" \
              "${dir}/public/js" \
              "${dir}/public/css" \
-             "${dir}/public/mix-manifest.json" 2>/dev/null || true
-      ;;
+             "${dir}/public/mix-manifest.json" \
+             "${dir}/public"/app.js \
+             "${dir}/public"/app.js.LICENSE.txt \
+             "${dir}/public"/[0-9]*.js 2>/dev/null || true
+    ;;
   esac
 }
 
-# measure_output DIR NAME -> "js_kb css_kb chunk_count"
+# measure_output DIR NAME -> "js_kb css_kb chunk_count"j
 measure_output() {
   local dir="$1" name="$2"
   local js_bytes=0 css_bytes=0 chunks=0
@@ -154,9 +157,9 @@ measure_output() {
       fi
       ;;
     laravel-mix)
-      if [[ -d "${dir}/public/js" ]]; then
-        js_bytes=$(find "${dir}/public/js" -name '*.js' -type f -exec cat {} + 2>/dev/null | wc -c)
-        chunks=$(find "${dir}/public/js" -name '*.js' -type f 2>/dev/null | wc -l)
+      if [[ -d "${dir}/public" ]]; then
+        js_bytes=$(find "${dir}/public" -maxdepth 1 -name '*.js' -type f -exec cat {} + 2>/dev/null | wc -c)
+        chunks=$(find "${dir}/public" -maxdepth 1 -name '*.js' -type f 2>/dev/null | wc -l)
       fi
       if [[ -d "${dir}/public/css" ]]; then
         css_bytes=$(find "${dir}/public/css" -name '*.css' -type f -exec cat {} + 2>/dev/null | wc -c)
