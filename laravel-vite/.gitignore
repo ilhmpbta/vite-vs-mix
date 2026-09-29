@@ -42,4 +42,4 @@ yarn-error.log
 /boost.json
 /opencode.json
 /opencode.jsonc
-*/stress/*
+stress/

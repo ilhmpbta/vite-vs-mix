@@ -7,6 +7,7 @@ const COUNT = parseInt(process.argv[2] || '500', 10);
 const ROOT = process.cwd();
 const DIR = path.join(ROOT, 'resources/js/components/stress');
 const UTIL_DIR = path.join(ROOT, 'resources/js/lib');
+const PAGE_DIR = path.join(ROOT, 'resources/js/pages');
 
 if (Number.isNaN(COUNT) || COUNT < 1) {
     console.error('Usage: node scripts/gen-stress.mjs <count>');
@@ -70,7 +71,28 @@ async function main() {
     }
     await mkdir(DIR, { recursive: true });
     await mkdir(UTIL_DIR, { recursive: true });
+    await mkdir(PAGE_DIR, { recursive: true });
+    
+    const pageSource = `// AUTO-GENERATED. Safe to delete.
+import { Head } from '@inertiajs/react';
+import StressGrid, { STRESS_COMPONENT_COUNT } from '@/components/stress';
 
+export default function Stress() {
+    return (
+        <>
+            <Head title="Stress test" />
+            <div className="p-4">
+                <h1 className="mb-4 text-lg font-medium">
+                    Stress test — {STRESS_COMPONENT_COUNT} components
+                </h1>
+                <StressGrid />
+            </div>
+        </>
+    );
+}
+`;
+    
+    await writeFile(path.join(PAGE_DIR, 'stress.tsx'), pageSource, 'utf8');
     await writeFile(path.join(UTIL_DIR, 'stress-utils.ts'), utilSource, 'utf8');
 
     const imports = [];
